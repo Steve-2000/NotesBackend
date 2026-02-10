@@ -10,7 +10,12 @@ const connectdb = require("./connection/db");
 
 connectdb();
 app.use(express.json());
-app.use(cors())
+app.use(cors({ 
+  origin: "https://notes-9124a.web.app",
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}))
 app.use('/', userroute);
 app.use("/",notesroute)
 

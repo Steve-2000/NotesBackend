@@ -4,58 +4,68 @@ const jwt=require('jsonwebtoken')
 const dotenv=require("dotenv").config()
 
 const signup=async(req,res)=>{
-    const{email,password}=req.body
-       if(email==="" || password===""){   
-        return res.status(400).json({message:"email and password are required"})
-    }
+    try {
+        const{email,password}=req.body
+        if(email==="" || password===""){   
+            return res.status(400).json({message:"email and password are required"})
+        }
 
 
-    if(email && password){
-        const emailin=await structure.findOne({email})
-        if(!emailin){
-            const hpw=await bcrypt.hash(password,10)
-         const newuser=   await structure.create({email,password:hpw})
-        
-            token=jwt.sign({email,id:newuser._id},process.env.SECURITY_KEY)
-            return res.status(201).json({token,user:newuser})
+        if(email && password){
+            const emailin=await structure.findOne({email})
+            if(!emailin){
+                const hpw=await bcrypt.hash(password,10)
+                const newuser=   await structure.create({email,password:hpw})
+            
+                token=jwt.sign({email,id:newuser._id},process.env.SECURITY_KEY)
+                return res.status(201).json({token,user:newuser})
 
+
+
+
+            }
+            else{
+                return res.status(400).json({message:"mail already there"})
+            }
 
 
 
         }
         else{
-            return res.status(400).json({message:"mail already there"})
-    }
-
-
-
-    }
-    else{
-        return res.send("require both email and passord")
+            return res.status(400).json({message:"require both email and password"})
+        }
+    } catch (error) {
+        console.error("Signup error:", error);
+        return res.status(500).json({message: "Server error during signup", error: error.message})
     }
 }
 
 
 const login=async(req,res)=>{
-    const{email,password}=req.body
-     if(email==="" || password===""){   
-        return res.status(400).json({message:"email and password are required"})
-    }
-    const userexit=await structure.findOne({email})
+    try {
+        const{email,password}=req.body
+        if(email==="" || password===""){   
+            return res.status(400).json({message:"email and password are required"})
+        }
+        const userexit=await structure.findOne({email})
 
-   
+        
 
-    if(email){
-        if(userexit && await bcrypt.compare(password,userexit.password)){
-            const token= jwt.sign({email,id:userexit._id},process.env.SECURITY_KEY)
-            return res.status(200).json({token,user:userexit})
-         }
+        if(email){
+            if(userexit && await bcrypt.compare(password,userexit.password)){
+                const token= jwt.sign({email,id:userexit._id},process.env.SECURITY_KEY)
+                return res.status(200).json({token,user:userexit})
+            }
+            else{
+                return res.status(400).json({message:"invalid email or password"})
+
+            }}
         else{
-            return res.status(400).json({message:"invalid email or password"})
-
-    }}
-    else{
-        return res.status(400).json({message:"email not found"})
+            return res.status(400).json({message:"email not found"})
+        }
+    } catch (error) {
+        console.error("Login error:", error);
+        return res.status(500).json({message: "Server error during login", error: error.message})
     }
 
 }
