@@ -4,19 +4,44 @@ const structure1=require("../Model/Notes");
 
 const sendNotes=async(req,res)=>{
     try {
+        console.log('📝 sendNotes function called');
+        console.log('Request body:', req.body);
+        console.log('Request file:', req.file);
+        console.log('User from token:', req.user);
+        
         const {head,description,user,favourite} = req.body;
         const document = req.file ? req.file.filename : null;
         
-        if(head){
-            const newNotes=await structure1.create({head,description,document,user,favourite})
-            return res.status(201).json({message:"Notes created successfully"})
-        }
-        else{
+        if(!head){
             return res.status(400).json({message:"head is required"})
         }
+        
+        if(!user){
+            return res.status(400).json({message:"user is required"})
+        }
+        
+        const newNotes=await structure1.create({
+            head,
+            description,
+            document,
+            user,
+            favourite: favourite || false
+        })
+        
+        console.log('✅ Note created successfully:', newNotes._id);
+        return res.status(201).json({
+            message:"Notes created successfully",
+            note: newNotes
+        })
+        
     } catch (error) {
-        console.error("Error creating note:", error);
-        return res.status(500).json({message: "Internal server error", error: error.message});
+        console.error("❌ Error creating note:", error);
+        console.error("Error stack:", error.stack);
+        return res.status(500).json({
+            message: "Internal server error", 
+            error: error.message,
+            details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
     }
 }
 

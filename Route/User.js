@@ -4,7 +4,7 @@ const{login,signup,getuser}=require("../content/User")
 
 router.post("/login",login)
 router.post("/signup",signup)
-router.get("/:id",getuser)
+router.get("/user/:id",getuser)
 
 
 module.exports=router
