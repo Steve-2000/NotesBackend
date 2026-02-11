@@ -1,7 +1,7 @@
 const express = require('express');
 const dotenv = require("dotenv").config();
 const app = express();
-// const cors=require("cors")
+const cors=require("cors")
 app.use(
   cors({
     origin: [
