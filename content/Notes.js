@@ -3,19 +3,21 @@ const structure1=require("../Model/Notes");
 
 
 const sendNotes=async(req,res)=>{
-    const {head,description,document,user,favourite} = req.body;
-    if(head){
-    
-
-           const newNotes=await structure1.create({head,description,document,user,favourite})
-        return res.status(201).json({message:"Notes created successfully"})
-    }
-
-    else{
+    try {
+        const {head,description,user,favourite} = req.body;
+        const document = req.file ? req.file.filename : null;
+        
+        if(head){
+            const newNotes=await structure1.create({head,description,document,user,favourite})
+            return res.status(201).json({message:"Notes created successfully"})
+        }
+        else{
             return res.status(400).json({message:"head is required"})
-     
+        }
+    } catch (error) {
+        console.error("Error creating note:", error);
+        return res.status(500).json({message: "Internal server error", error: error.message});
     }
-    
 }
 
 
