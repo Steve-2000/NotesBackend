@@ -2,16 +2,19 @@ const express = require('express');
 const dotenv = require("dotenv").config();
 const app = express();
 // const cors=require("cors")
-app.use(cors({
-  origin: [
-    "https://notes-9124a.web.app",
-    "https://notes-9124a.firebaseapp.com",
-    "http://localhost:5173",
-    "http://localhost:3000"
-  ],
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-}));
+app.use(
+  cors({
+    origin: [
+      "https://notes-9124a.web.app",
+      "https://notes-9124a.firebaseapp.com",
+      "http://localhost:5173",
+      "http://localhost:3000",
+    ],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 
 const userroute = require("./Route/User");
